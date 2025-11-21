@@ -25,12 +25,11 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
-            /* 클릭 방해 안 하도록 */
         }
 
-        /* 로딩 텍스트 숨김 (사용자 요청: 안내 문구 없이 바로 카메라) */
         .arjs-loader div {
             display: none;
+            /* 텍스트 숨김 */
         }
     </style>
 
@@ -39,6 +38,7 @@
         AFRAME.registerComponent('float', {
             tick: function (t) {
                 this.el.object3D.position.y = 100 + Math.sin(t / 500) * 10;
+                // 100은 기본 높이, 10은 움직임 폭 (모델 크기에 따라 조정 필요)
             }
         });
     </script>
@@ -46,7 +46,7 @@
 
 <body style="margin: 0; overflow: hidden;">
 
-    <!-- 로딩 화면 (텍스트 없이 배경만 잠시 보이다가 사라짐) -->
+    <!-- 로딩 화면 -->
     <div class="arjs-loader">
         <div></div>
     </div>
@@ -63,22 +63,30 @@
 
         <!-- 
          NFT 마커 설정 
-         url="./1W8JF-2" : QR 코드 마커
+         url="./qrcode" : QR 코드 마커 (파일명이 qrcode로 변경됨)
       -->
-        <a-nft type="nft" url="./1W8JF-2" smooth="false" smoothCount="0" smoothTolerance=".01" smoothThreshold="5"
+        <a-nft type="nft" url="./qrcode" smooth="false" smoothCount="0" smoothTolerance=".01" smoothThreshold="5"
             emitevents="true" id="nft-marker">
 
+            <!-- 
+            [주의] NFT 방식은 모델 크기(Scale)를 매우 크게 잡아야 보입니다.
+            일반 마커 방식보다 100~200배 크게 설정해야 할 수 있습니다.
+        -->
+
             <!-- 1. 웹사이트 이미지 (홀로그램) -->
-            <a-entity position="150 0 -50">
+            <!-- rotation="-90 0 0"은 이미지를 마커 위에 눕히는 설정입니다 -->
+            <a-entity position="150 0 -50"> <!-- 위치 조정 (x, y, z) -->
+
                 <!-- 이미지 패널 (크기 축소: 화면 가림 방지) -->
                 <a-image src="#site-img" width="150" height="81" position="0 0 0" rotation="-90 0 0" opacity="0.9"
                     float>
                 </a-image>
 
-                <!-- 2. 3D 모델 -->
+                <!-- 2. 3D 모델 (이미지 위나 옆에 배치) -->
                 <a-entity gltf-model="#3d-model" scale="25 25 25" position="75 0 25" rotation="-90 0 0"
                     animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
                 </a-entity>
+
             </a-entity>
         </a-nft>
 
@@ -88,15 +96,20 @@
     <script>
         // 로딩 화면 제어
         var loader = document.querySelector(".arjs-loader");
+        var marker = document.querySelector("#nft-marker");
 
         // AR.js가 로드되면(또는 윈도우 로드 시) 로더 숨기기 시도
         window.addEventListener("load", () => {
-            // 약간의 지연 후 로더 숨김 (카메라 초기화 시간 확보)
             setTimeout(() => {
                 if (loader) loader.style.display = "none";
             }, 1000);
         });
-    </script>
+
+        // 마커 인식 시 로더 확실히 숨기기
+        marker.addEventListener("markerFound", (e) => {
+            if (loader) loader.style.display = "none";
+        });
+    </script> </a-scene>
 </body>
 
 </html>
