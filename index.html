@@ -67,7 +67,8 @@
          url="경로/파일명" : 확장자(.fset 등)는 적지 않고 '파일명'까지만 적습니다.
          예: 같은 폴더의 qrcode 파일들을 로드하려면 "./qrcode" 라고 적습니다.
       -->
-        <a-nft type="nft" url="./1W8JF-2" smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5">
+        <a-nft type="nft" url="./1W8JF-2" smooth="false" smoothCount="0" smoothTolerance=".01" smoothThreshold="5"
+            emitevents="true" id="nft-marker">
 
             <!-- 
             [주의] NFT 방식은 모델 크기(Scale)를 매우 크게 잡아야 보입니다.
@@ -93,6 +94,27 @@
 
         <a-entity camera></a-entity>
     </a-scene>
+
+    <script>
+        // 마커 인식 이벤트 리스너 추가
+        var marker = document.querySelector("#nft-marker");
+        var loader = document.querySelector(".arjs-loader");
+
+        marker.addEventListener("markerFound", (e) => {
+            console.log("Marker Found!");
+            // 마커를 찾으면 로딩 화면을 숨기거나 "찾았습니다!" 메시지를 띄울 수 있습니다.
+            // 여기서는 로딩 화면 텍스트를 변경해봅니다.
+            if (loader) {
+                loader.style.display = "none"; // 인식되면 로더 숨김 (화면이 바로 보이게)
+            }
+        });
+
+        marker.addEventListener("markerLost", (e) => {
+            console.log("Marker Lost!");
+            // 마커를 놓치면 다시 로딩 화면(또는 안내 문구)을 보여줄 수 있습니다.
+            // if (loader) loader.style.display = "flex"; 
+        });
+    </script>
 </body>
 
 </html>
