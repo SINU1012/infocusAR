@@ -2,17 +2,16 @@
 <html>
 
 <head>
-    <title>InFocus AR Hologram</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
-    <!-- A-Frame 및 AR.js (Image Tracking 버전) 라이브러리 로드 -->
-    <script
-        src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93963254280c23d21cfe6c/dist/aframe-master.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>WebAR Image Tracking</title>
+    <!-- A-Frame 라이브러리 -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- AR.js NFT 버전 라이브러리 -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-    <!-- 로딩 화면 스타일 (데이터 로딩에 시간이 걸리므로 필수) -->
     <style>
+        /* 로딩 화면 스타일 */
         .arjs-loader {
             height: 100%;
             width: 100%;
@@ -30,67 +29,37 @@
             text-align: center;
             font-size: 1.25em;
             color: white;
-            font-family: sans-serif;
         }
     </style>
-
-    <!-- 부드러운 움직임 스크립트 -->
-    <script>
-        AFRAME.registerComponent('float', {
-            tick: function (t) {
-                this.el.object3D.position.y = 100 + Math.sin(t / 500) * 10;
-                // 100은 기본 높이, 10은 움직임 폭 (모델 크기에 따라 조정 필요)
-            }
-        });
-    </script>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
-
-    <!-- 로딩 화면 -->
+    <!-- 로딩 화면 (NFT 마커는 로딩 시간이 조금 걸립니다) -->
     <div class="arjs-loader">
-        <div>로딩 중입니다...<br>잠시만 기다려주세요.</div>
+        <div>카메라를 시작하는 중...<br />QR코드를 비춰주세요</div>
     </div>
 
-    <!-- AR 씬 설정 -->
-    <a-scene vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true; precision: medium;" embedded
+    <!-- AR 장면 설정 -->
+    <a-scene vr-mode-ui="enabled: false;" renderer="logarithmicDepthBuffer: true;" embedded
         arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
-
-        <!-- 자산 로드 -->
-        <a-assets>
-            <img id="site-img" src="site_preview.png">
-            <a-asset-item id="3d-model" src="model.glb"></a-asset-item>
-        </a-assets>
-
         <!-- 
-         NFT 마커 설정 
-         url="경로/파일명" : 확장자(.fset 등)는 적지 않고 '파일명'까지만 적습니다.
-         예: 같은 폴더의 qrcode 파일들을 로드하려면 "./qrcode" 라고 적습니다.
+        NFT 마커 설정 
+        url: 파일 경로에서 확장자(.fset, .iset 등)를 뺀 이름을 적어야 합니다.
+        현재 폴더에 qrcode.fset 등이 있으므로 './qrcode' 라고 적습니다.
       -->
         <a-nft type="nft" url="./qrcode" smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5">
-
             <!-- 
-            [주의] NFT 방식은 모델 크기(Scale)를 매우 크게 잡아야 보입니다.
-            일반 마커 방식보다 100~200배 크게 설정해야 할 수 있습니다.
+          표시할 콘텐츠: site_preview.png
+          rotation: -90 0 0 은 이미지를 바닥(마커)에 눕히는 각도입니다.
+          scale: NFT 마커는 크기 단위가 픽셀이라 매우 작게 나올 수 있으므로
+                 이미지가 안 보이면 이 숫자를 100~200 등으로 키워보세요.
         -->
-
-            <!-- 1. 웹사이트 이미지 (홀로그램) -->
-            <!-- rotation="-90 0 0"은 이미지를 마커 위에 눕히는 설정입니다 -->
-            <a-entity position="50 0 -100"> <!-- 위치 조정 (x, y, z) -->
-
-                <!-- 이미지 패널 -->
-                <a-image src="#site-img" width="300" height="180" position="0 0 0" rotation="-90 0 0" opacity="0.9"
-                    float>
-                </a-image>
-
-                <!-- 2. 3D 모델 (이미지 위나 옆에 배치) -->
-                <a-entity gltf-model="#3d-model" scale="50 50 50" position="150 0 50" rotation="-90 0 0"
-                    animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
-                </a-entity>
-
-            </a-entity>
+            <a-image src="./site_preview.png" width="1" height="0.7" position="0 0 0" rotation="-90 0 0"
+                scale="150 150 150">
+            </a-image>
         </a-nft>
 
+        <!-- 카메라 설정 -->
         <a-entity camera></a-entity>
     </a-scene>
 </body>
