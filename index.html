@@ -58,8 +58,8 @@
 
         <!-- 자산 로드 -->
         <a-assets>
-            <img id="site-img" src="website_screenshot.png">
-            <a-asset-item id="3d-model" src="model.glb"></a-asset-item>
+            <img id="site-img" src="site_preview_small.png">
+            <a-asset-item id="3d-model" src="hologram_infocus.glb"></a-asset-item>
         </a-assets>
 
         <!-- 
@@ -67,7 +67,8 @@
          url="경로/파일명" : 확장자(.fset 등)는 적지 않고 '파일명'까지만 적습니다.
          예: 같은 폴더의 qrcode 파일들을 로드하려면 "./qrcode" 라고 적습니다.
       -->
-        <a-nft type="nft" url="./qrcode" smooth="true" smoothCount="10" smoothTolerance=".01" smoothThreshold="5">
+        <a-nft type="nft" url="./site_preview_small" smooth="true" smoothCount="10" smoothTolerance=".01"
+            smoothThreshold="5">
 
             <!-- 
             [주의] NFT 방식은 모델 크기(Scale)를 매우 크게 잡아야 보입니다.
@@ -79,7 +80,7 @@
             <a-entity position="50 0 -100"> <!-- 위치 조정 (x, y, z) -->
 
                 <!-- 이미지 패널 -->
-                <a-image src="#site-img" width="300" height="180" position="0 0 0" rotation="-90 0 0" opacity="0.9"
+                <a-image src="#site-img" width="300" height="163" position="0 0 0" rotation="-90 0 0" opacity="0.9"
                     float>
                 </a-image>
 
