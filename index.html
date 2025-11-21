@@ -69,14 +69,14 @@
             emitevents="true" id="nft-marker">
 
             <!-- 1. 웹사이트 이미지 (홀로그램) -->
-            <a-entity position="50 0 -100">
-                <!-- 이미지 패널 -->
-                <a-image src="#site-img" width="300" height="163" position="0 0 0" rotation="-90 0 0" opacity="0.9"
+            <a-entity position="150 0 -50">
+                <!-- 이미지 패널 (크기 축소: 화면 가림 방지) -->
+                <a-image src="#site-img" width="150" height="81" position="0 0 0" rotation="-90 0 0" opacity="0.9"
                     float>
                 </a-image>
 
                 <!-- 2. 3D 모델 -->
-                <a-entity gltf-model="#3d-model" scale="50 50 50" position="150 0 50" rotation="-90 0 0"
+                <a-entity gltf-model="#3d-model" scale="25 25 25" position="75 0 25" rotation="-90 0 0"
                     animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
                 </a-entity>
             </a-entity>
