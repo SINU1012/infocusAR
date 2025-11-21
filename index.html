@@ -11,7 +11,7 @@
         src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93963254280c23d21cfe6c/dist/aframe-master.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-    <!-- 로딩 화면 스타일 (데이터 로딩에 시간이 걸리므로 필수) -->
+    <!-- 로딩 화면 스타일 (최소화) -->
     <style>
         .arjs-loader {
             height: 100%;
@@ -24,13 +24,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            pointer-events: none;
+            /* 클릭 방해 안 하도록 */
         }
 
+        /* 로딩 텍스트 숨김 (사용자 요청: 안내 문구 없이 바로 카메라) */
         .arjs-loader div {
-            text-align: center;
-            font-size: 1.25em;
-            color: white;
-            font-family: sans-serif;
+            display: none;
         }
     </style>
 
@@ -39,7 +39,6 @@
         AFRAME.registerComponent('float', {
             tick: function (t) {
                 this.el.object3D.position.y = 100 + Math.sin(t / 500) * 10;
-                // 100은 기본 높이, 10은 움직임 폭 (모델 크기에 따라 조정 필요)
             }
         });
     </script>
@@ -47,9 +46,9 @@
 
 <body style="margin: 0; overflow: hidden;">
 
-    <!-- 로딩 화면 -->
+    <!-- 로딩 화면 (텍스트 없이 배경만 잠시 보이다가 사라짐) -->
     <div class="arjs-loader">
-        <div>로딩 중입니다...<br>잠시만 기다려주세요.</div>
+        <div></div>
     </div>
 
     <!-- AR 씬 설정 -->
@@ -64,81 +63,38 @@
 
         <!-- 
          NFT 마커 설정 
-         url="경로/파일명" : 확장자(.fset 등)는 적지 않고 '파일명'까지만 적습니다.
-         예: 같은 폴더의 qrcode 파일들을 로드하려면 "./qrcode" 라고 적습니다.
+         url="./1W8JF-2" : QR 코드 마커
       -->
         <a-nft type="nft" url="./1W8JF-2" smooth="false" smoothCount="0" smoothTolerance=".01" smoothThreshold="5"
             emitevents="true" id="nft-marker">
 
-            <!-- 
-            [주의] NFT 방식은 모델 크기(Scale)를 매우 크게 잡아야 보입니다.
-            일반 마커 방식보다 100~200배 크게 설정해야 할 수 있습니다.
-        -->
-
             <!-- 1. 웹사이트 이미지 (홀로그램) -->
-            <!-- rotation="-90 0 0"은 이미지를 마커 위에 눕히는 설정입니다 -->
-            <a-entity position="50 0 -100"> <!-- 위치 조정 (x, y, z) -->
-
+            <a-entity position="50 0 -100">
                 <!-- 이미지 패널 -->
                 <a-image src="#site-img" width="300" height="163" position="0 0 0" rotation="-90 0 0" opacity="0.9"
                     float>
                 </a-image>
 
-                <!-- 2. 3D 모델 (이미지 위나 옆에 배치) -->
+                <!-- 2. 3D 모델 -->
                 <a-entity gltf-model="#3d-model" scale="50 50 50" position="150 0 50" rotation="-90 0 0"
                     animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
                 </a-entity>
-
             </a-entity>
         </a-nft>
 
         <a-entity camera></a-entity>
     </a-scene>
 
-    <div id="debug-console"
-        style="position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background: rgba(0,0,0,0.5); color: yellow; font-size: 12px; overflow-y: scroll; z-index: 99999; pointer-events: none;">
-        Debug Log:<br>
-    </div>
-
     <script>
-        // 디버그 로그 함수
-        function log(msg) {
-            var consoleDiv = document.getElementById('debug-console');
-            consoleDiv.innerHTML += msg + "<br>";
-            consoleDiv.scrollTop = consoleDiv.scrollHeight;
-            console.log(msg);
-        }
-
-        log("Script started. Waiting for events...");
-
-        var marker = document.querySelector("#nft-marker");
+        // 로딩 화면 제어
         var loader = document.querySelector(".arjs-loader");
 
-        // 3초 뒤에 강제로 로더 숨기기 (카메라 확인용)
-        setTimeout(() => {
-            if (loader && loader.style.display !== "none") {
-                log("Auto-hiding loader to show camera.");
-                loader.style.display = "none";
-            }
-        }, 3000);
-
-        // AR.js 로드 완료 이벤트 (정확한 이벤트명이 없을 수 있어 window.onload도 사용)
+        // AR.js가 로드되면(또는 윈도우 로드 시) 로더 숨기기 시도
         window.addEventListener("load", () => {
-            log("Window loaded.");
-        });
-
-        marker.addEventListener("markerFound", (e) => {
-            log("Marker Found! 🎉");
-            if (loader) loader.style.display = "none";
-        });
-
-        marker.addEventListener("markerLost", (e) => {
-            log("Marker Lost... 🔍");
-        });
-
-        // 에러 핸들링
-        window.addEventListener("error", (e) => {
-            log("ERROR: " + e.message);
+            // 약간의 지연 후 로더 숨김 (카메라 초기화 시간 확보)
+            setTimeout(() => {
+                if (loader) loader.style.display = "none";
+            }, 1000);
         });
     </script>
 </body>
